@@ -1,107 +1,115 @@
-# Работа с Очировой Ириной (7 вариант)
-
 import os
-
-print(os.getenv("S1_Papsueva_Ochirova"))
-print(os.getenv("S2_Papsueva_Ochirova"))
-print(os.getenv("S3_Papsueva_Ochirova"))
-
-# Индивидуальное задание вариант 8, изменения вариант 7
-from sympy import *
-
-k, T, C, L = symbols("k C T L")
-# линейный способ
-C_ost = 80000 # Изменена начальная стоимость, изменено корректно (Проверено Очировой) 5 баллов
-Am_lst = []
-C_ost_lst = []
-for i in range(5): # Изменено количество периодов, изменено корректно (Проверено Очировой) 5 баллов
-    Am = (C - L) / T
-    C_ost -= Am.subs({C: 80000, T: 5, L: 0})
-    Am_lst.append(round(Am.subs({C: 80000, T: 5, L: 0}), 2))
-    C_ost_lst.append(round(C_ost, 2))
-
-print("Am_lst:", Am_lst)
-print("C_ost_lst:", C_ost_lst)
-
-# способ уменьшаемого остатка
-Aj = 0
-C_ost = 80000 # Изменена начальная стоимость, изменено корректно (Проверено Очировой) 5 баллов
-Am_lst_2 = []
-C_ost_lst_2 = []
-for i in range(5): # Изменено количество периодов, изменено корректно (Проверено Очировой) 5 баллов
-    Am = k * 1 / T * (C - Aj)
-    C_ost -= Am.subs({C: 80000, T: 5, L: 0, k: 2})
-    Am_lst_2.append(round(Am.subs({C: 80000, T: 5, L: 0, k: 2}), 2))
-    Aj += Am
-    C_ost_lst_2.append(round(C_ost, 2))
-
-print("Am_lst_2:", Am_lst_2)
-print("C_ost_lst_2:", C_ost_lst_2)
-
-# Контейнер табличного вывода
 import pandas as pd
-
-Y = range(1, 6)
-table1 = list(zip(Y, C_ost_lst, Am_lst)) # Что это означант? Ответ: это список кортежей, где каждый кортеж содержит значения из трех списков Y, C_ost_lst и Am_lst.
-table2 = list(zip(Y, C_ost_lst_2, Am_lst_2))
-tfame = pd.DataFrame(table1, columns=["Y", "C_ost_lst", "Am_lst"])
-tfame2 = pd.DataFrame(table2, columns=["Y", "C_ost_lst_2", "Am_lst_2"])
-
-print(tfame)
-print(tfame2)
-
-# Контейнер визуализации
-import numpy as np
 import matplotlib.pyplot as plt
 
-plt.plot(tfame["Y"], tfame["C_ost_lst"], label="Am") # Что это означант? Ответ: это построение графика, где по оси X откладываются значения из столбца "Y" таблицы tfame, а по оси Y - значения из столбца "C_
-plt.savefig("chart7.png")
-plt.figure()
-plt.plot(tfame2["Y"], tfame2["C_ost_lst_2"], label="Am_2")
-plt.savefig("chart8.png")
+# ===== 1. ЧИТАЕМ СЕКРЕТНЫЕ КЛЮЧИ =====
+RISK_THRESHOLD = float(os.getenv("ACCESS_RISK_THRESHOLD", 0.6))
+AUDIT_TOKEN = os.getenv("NETWORK_AUDIT_TOKEN", "default")
+DEVICE_SECRET = os.getenv("PHYSICAL_DEVICE_SECRET", "default")
 
-plt.figure()
-vals = Am_lst
-labels = [str(x) for x in range(1, 6)]
-explode = (0.1, 0.1, 0.1, 0.1, 0.1)
-fig, ax = plt.subplots()
-ax.pie(
-    vals,
-    labels=labels,
-    autopct="%1.1f%%",
-    shadow=True,
-    explode=explode,
-    wedgeprops={"lw": 1, "ls": "--", "edgecolor": "k"},
-    rotatelabels=True,
-)
-ax.axis("equal")
-plt.savefig("chart9.png")
+print("=" * 50)
+print("КОНТЕЙНЕР БЕЗОПАСНОСТИ (ВАРИАНТ 31)")
+print("=" * 50)
+print(f"Порог риска (из секрета): {RISK_THRESHOLD}")
+print(f"Токен аудита: {AUDIT_TOKEN[:4] if AUDIT_TOKEN != 'default' else 'None'}***")
+print(f"Секрет устройства: {DEVICE_SECRET[:4] if DEVICE_SECRET != 'default' else 'None'}***")
+print()
 
-plt.figure()
-vals = Am_lst_2
-labels = [str(x) for x in range(1, 6)]
-explode = (0.1, 0.1, 0.1, 0.1, 0.1)
-fig, ax = plt.subplots()
-ax.pie(
-    vals,
-    labels=labels,
-    autopct="%1.1f%%",
-    shadow=True,
-    explode=explode,
-    wedgeprops={"lw": 1, "ls": "--", "edgecolor": "k"},
-    rotatelabels=True,
-)
-ax.axis("equal")
-plt.savefig("chart10.png")
+# ===== 2. БАЗА ЗНАНИЙ =====
+device_criticality = {
+    "switch": {"core": 0.9, "access": 0.5},
+    "router": {"core": 0.95, "edge": 0.7},
+    "patch_panel": {"main": 0.4, "aux": 0.3}
+}
 
-plt.figure()
-table1 = list(zip(Y, Am_lst))
-table2 = list(zip(Y, Am_lst_2))
-tfame = pd.DataFrame(table1, columns=["Y", "Am_lst"]) # Что это означант? Ответ: это создание объекта DataFrame из списка кортежей table1 с указанием названий столбцов "Y" и "Am_lst".
-tfame2 = pd.DataFrame(table2, columns=["Y", "Am_lst_2"])
-plt.bar(tfame["Y"], tfame["Am_lst"])
-plt.savefig("chart11.jpeg") 
-plt.figure()
-plt.bar(tfame2["Y"], tfame2["Am_lst_2"])
-plt.savefig("chart12.png")
-plt.figure()
+role_risk_factor = {
+    "admin": 0.3,
+    "user": 0.6,
+    "guest": 0.9
+}
+
+# ===== 3. ФУНКЦИЯ РАСЧЁТА РИСКА (КОНТЕЙНЕР РАСЧЁТА) =====
+def calculate_risk(device_type, device_subtype, role):
+    if device_type not in device_criticality:
+        return 1.0
+    crit = device_criticality[device_type].get(device_subtype, 0.5)
+    role_factor = role_risk_factor.get(role, 0.8)
+    return round(crit * role_factor, 3)
+
+# ===== 4. ТЕСТОВЫЕ ЗАПРОСЫ (ИМИТАЦИЯ ОБРАЩЕНИЙ К ОБОРУДОВАНИЮ) =====
+requests = [
+    {"id": 1, "device_type": "switch", "subtype": "core", "role": "guest"},
+    {"id": 2, "device_type": "router", "subtype": "core", "role": "admin"},
+    {"id": 3, "device_type": "patch_panel", "subtype": "main", "role": "user"},
+    {"id": 4, "device_type": "switch", "subtype": "access", "role": "admin"},
+    {"id": 5, "device_type": "router", "subtype": "edge", "role": "guest"},
+    {"id": 6, "device_type": "firewall", "subtype": "unknown", "role": "user"}
+]
+
+# ===== 5. ОБРАБОТКА ЗАПРОСОВ =====
+results = []
+
+print("ОБРАБОТКА ЗАПРОСОВ К ФИЗИЧЕСКОМУ ОБОРУДОВАНИЮ")
+print("-" * 50)
+
+for req in requests:
+    risk = calculate_risk(req["device_type"], req["subtype"], req["role"])
+    decision = "ALLOW" if risk <= RISK_THRESHOLD else "DENY"
+
+    results.append({
+        "id": req["id"],
+        "device": f"{req['device_type']}/{req['subtype']}",
+        "role": req["role"],
+        "risk": risk,
+        "decision": decision
+    })
+
+    print(f"Запрос {req['id']}: {req['device_type']}/{req['subtype']} | Роль: {req['role']} | Риск: {risk} | Решение: {decision}")
+
+print()
+print(f"Статистика: ALLOW = {sum(1 for r in results if r['decision'] == 'ALLOW')}, DENY = {sum(1 for r in results if r['decision'] == 'DENY')}")
+print()
+
+# ===== 6. КОНТЕЙНЕР ТАБЛИЧНОГО ПРЕДСТАВЛЕНИЯ =====
+df = pd.DataFrame(results)
+print("ТАБЛИЦА РЕШЕНИЙ")
+print("=" * 50)
+print(df.to_string(index=False))
+print()
+
+# Сохраняем в CSV
+df.to_csv("security_audit.csv", index=False)
+print("Сохранено: security_audit.csv")
+
+# ===== 7. КОНТЕЙНЕР ВИЗУАЛИЗАЦИИ =====
+allowed = sum(1 for r in results if r["decision"] == "ALLOW")
+denied = len(results) - allowed
+
+# График 1: столбчатая диаграмма
+plt.figure(figsize=(6, 4))
+plt.bar(["Разрешено (ALLOW)", "Заблокировано (DENY)"], [allowed, denied], color=["green", "red"])
+plt.title("Решения контейнера безопасности")
+plt.ylabel("Количество запросов")
+plt.savefig("security_decisions.png")
+plt.close()
+print("Сохранено: security_decisions.png")
+
+# График 2: линейный график рисков
+ids = [r["id"] for r in results]
+risks = [r["risk"] for r in results]
+
+plt.figure(figsize=(8, 4))
+plt.plot(ids, risks, marker="o", linestyle="--", color="blue", linewidth=2)
+plt.axhline(y=RISK_THRESHOLD, color="red", linestyle=":", label=f"Порог риска ({RISK_THRESHOLD})")
+plt.xlabel("ID запроса")
+plt.ylabel("Уровень риска")
+plt.title("Динамика рисков запросов к оборудованию")
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.savefig("risk_trend.png")
+plt.close()
+print("Сохранено: risk_trend.png")
+
+print("\n" + "=" * 50)
+print("РАБОТА ВСЕХ КОНТЕЙНЕРОВ ЗАВЕРШЕНА")
+print("=" * 50)

@@ -1,0 +1,7 @@
+id,device,role,risk,decision
+1,switch/core,guest,0.81,DENY
+2,router/core,admin,0.285,ALLOW
+3,patch_panel/main,user,0.24,ALLOW
+4,switch/access,admin,0.15,ALLOW
+5,router/edge,guest,0.63,DENY
+6,firewall/unknown,user,1.0,DENY
