@@ -1,16 +1,10 @@
 # Работа с Очировой Ириной (7 вариант)
 
 import os
-my_secret = os.environ["S1_Papsueva_Ochirova"]
-print(S1_Papsueva_Ochirova)
 
-import os
-my_secret = os.environ["S2_Papsueva_Ochirova"]
-print(S2_Papsueva_Ochirova)
-
-import os
-my_secret = os.environ["S3_Papsueva_Ochirova"]
-print(S3_Papsueva_Ochirova)
+print(os.getenv("S1_Papsueva_Ochirova"))
+print(os.getenv("S2_Papsueva_Ochirova"))
+print(os.getenv("S3_Papsueva_Ochirova"))
 
 # Индивидуальное задание вариант 8, изменения вариант 7
 from sympy import *
