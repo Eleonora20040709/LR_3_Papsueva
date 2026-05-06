@@ -1,7 +1,4 @@
 # Работа с Очировой Ириной (7 вариант)
-import os
-my_secret = os.environ["my_secret"]
-print(my_secret)
 
 import os
 my_secret = os.environ["S1_Papsueva_Ochirova"]
