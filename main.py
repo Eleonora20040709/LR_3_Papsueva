@@ -20,13 +20,13 @@ from sympy import *
 
 k, T, C, L = symbols("k C T L")
 # линейный способ
-C_ost = 70000 # Изменена начальная стоимость, изменено корректно (Проверено Очировой) 5 баллов
+C_ost = 80000 # Изменена начальная стоимость, изменено корректно (Проверено Очировой) 5 баллов
 Am_lst = []
 C_ost_lst = []
-for i in range(8): # Изменено количество периодов, изменено корректно (Проверено Очировой) 5 баллов
+for i in range(5): # Изменено количество периодов, изменено корректно (Проверено Очировой) 5 баллов
     Am = (C - L) / T
-    C_ost -= Am.subs({C: 70000, T: 8, L: 0})
-    Am_lst.append(round(Am.subs({C: 70000, T: 8, L: 0}), 2))
+    C_ost -= Am.subs({C: 80000, T: 5, L: 0})
+    Am_lst.append(round(Am.subs({C: 80000, T: 5, L: 0}), 2))
     C_ost_lst.append(round(C_ost, 2))
 
 print("Am_lst:", Am_lst)
@@ -34,13 +34,13 @@ print("C_ost_lst:", C_ost_lst)
 
 # способ уменьшаемого остатка
 Aj = 0
-C_ost = 70000 # Изменена начальная стоимость, изменено корректно (Проверено Очировой) 5 баллов
+C_ost = 80000 # Изменена начальная стоимость, изменено корректно (Проверено Очировой) 5 баллов
 Am_lst_2 = []
 C_ost_lst_2 = []
-for i in range(8): # Изменено количество периодов, изменено корректно (Проверено Очировой) 5 баллов
+for i in range(5): # Изменено количество периодов, изменено корректно (Проверено Очировой) 5 баллов
     Am = k * 1 / T * (C - Aj)
-    C_ost -= Am.subs({C: 70000, T: 8, L: 0, k: 2})
-    Am_lst_2.append(round(Am.subs({C: 70000, T: 8, L: 0, k: 2}), 2))
+    C_ost -= Am.subs({C: 80000, T: 5, L: 0, k: 2})
+    Am_lst_2.append(round(Am.subs({C: 80000, T: 5, L: 0, k: 2}), 2))
     Aj += Am
     C_ost_lst_2.append(round(C_ost, 2))
 
@@ -50,7 +50,7 @@ print("C_ost_lst_2:", C_ost_lst_2)
 # Контейнер табличного вывода
 import pandas as pd
 
-Y = range(1, 10)
+Y = range(1, 6)
 table1 = list(zip(Y, C_ost_lst, Am_lst)) # Что это означант? Ответ: это список кортежей, где каждый кортеж содержит значения из трех списков Y, C_ost_lst и Am_lst.
 table2 = list(zip(Y, C_ost_lst_2, Am_lst_2))
 tfame = pd.DataFrame(table1, columns=["Y", "C_ost_lst", "Am_lst"])
@@ -71,8 +71,8 @@ plt.savefig("chart8.png")
 
 plt.figure()
 vals = Am_lst
-labels = [str(x) for x in range(1, 10)]
-explode = (0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+labels = [str(x) for x in range(1, 6)]
+explode = (0.1, 0.1, 0.1, 0.1, 0.1)
 fig, ax = plt.subplots()
 ax.pie(
     vals,
@@ -88,8 +88,8 @@ plt.savefig("chart9.png")
 
 plt.figure()
 vals = Am_lst_2
-labels = [str(x) for x in range(1, 10)]
-explode = (0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+labels = [str(x) for x in range(1, 6)]
+explode = (0.1, 0.1, 0.1, 0.1, 0.1)
 fig, ax = plt.subplots()
 ax.pie(
     vals,
