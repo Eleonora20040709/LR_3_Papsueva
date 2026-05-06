@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # ===== 1. ЧИТАЕМ СЕКРЕТНЫЕ КЛЮЧИ =====
-RISK_THRESHOLD = float(os.getenv("ACCESS_RISK_THRESHOLD", 0.6))
+RISK_THRESHOLD = float(os.getenv("ACCESS_RISK_THRESHOLD", 0.4))
 AUDIT_TOKEN = os.getenv("NETWORK_AUDIT_TOKEN", "default")
 DEVICE_SECRET = os.getenv("PHYSICAL_DEVICE_SECRET", "default")
 
